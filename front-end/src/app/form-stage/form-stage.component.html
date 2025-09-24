@@ -1,0 +1,162 @@
+<div class="container-fluid g-0">
+
+  <!-- HEADER -->
+  <app-header></app-header>
+
+  <!-- MAIN CONTENT -->
+  <main class="black-borde">
+
+    <!-- TOOBAR TO ADD EMPLOYEES,PROJETS AND SEARCH EMPLOYEES -->
+    <div class="toolbar">
+
+      <div class="add-stage">
+        <button type="button" class="btn btn-outline-success btn-lg" data-bs-toggle="modal"
+          data-bs-target="#stageModal" #addStageButton>Add Internship</button>
+      </div>
+
+      <div class="search-stages">
+        <input type="search" class="form-control" placeholder="Search Stages"
+          (input)="searchStages(searchInput.value)" #searchInput>
+      </div>
+
+    </div>
+    <!-- AREA TO DISPLAY ALL THE stagiaires -->
+    <div class="stages">
+
+      <div class="row mt-5" *ngIf="stages.length == 0">
+        <div class="col text-center">
+          <span class="text-secondary fs-2 fw-bold fst-italic">There are No Internship Added!</span>
+        </div>
+      </div>
+      <br>
+    <br>
+      
+      <div class="row justify-content-center mb-5" *ngIf="!selectedStage">
+        <div class="col-md-10">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>title</th>
+                <th>Intern</th>
+                <th>Project</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let stage of stagesToDisplay | paginate: { itemsPerPage: 4, currentPage: page }">
+                <td>{{ stage.titre }}</td>
+                <td>{{ stage.stagiaire.firstname}} {{ stage.stagiaire.lastname}}</td>
+                <td>{{stage.projet.intitule}}</td>
+                <td>
+                  <button class="btn btn-info" (click)="showDetails(stage)">Details</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <pagination-controls (pageChange)="page = $event"></pagination-controls>
+        </div>
+      </div>
+
+      <div *ngIf="selectedStage" class="row mt-4">
+        <div class="col-md-10">
+          <app-stage [stage]="selectedStage" 
+                      (onRemoveStage)="removeStage($event)"
+                      (onEditStage)="editStage($event)"
+                      (closeDetails)="closeDetails()">
+          </app-stage>
+        </div>
+        
+      </div>
+      
+    </div>
+
+    
+  </main>
+</div>
+<!-- Modal stage-->
+<div class="modal fade" id="stageModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="stageModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="stageModalLabel">Enter Internship Information</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <form [formGroup]="stageForm">
+
+          <!-- TITLE AND DESCRIPTION -->
+          <div class="row">
+            <div class="col">
+              <input type="text" class="form-control" placeholder="Title" formControlName="titre">
+            </div>
+          </div>
+
+          <br>
+
+          <div class="row">
+            <div class="col">
+              <textarea type="text" class="form-control" placeholder="Description" formControlName="description"></textarea>
+            </div>
+          </div>
+
+          <!-- DATE DEBUT AND DATE FIN -->
+          <div class="row mt-5">
+            <div class="col form-heading">
+              <h6 class="text-secondary fst-italic">Date Information</h6>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <label for="dateDebut" class="form-label">Start Date</label>
+              <input type="date" class="form-control" id="dateDebut" formControlName="dateDebut">
+            </div>
+            <div class="col">
+              <label for="dateFin" class="form-label">End Date</label>
+              <input type="date" class="form-control" id="dateFin" formControlName="dateFin">
+            </div>
+          </div>
+
+          <!-- STAGIAIRE AND PROJET -->
+          <div class="row mt-5">
+            <div class="col form-heading">
+              <h6 class="text-secondary fst-italic">Internship Details</h6>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <label for="stagiaire" class="form-label">Intern</label>
+              <select class="form-select" formControlName="stagiaire">
+                <option *ngFor="let stagiaire of stagiairesOptions" [ngValue]="stagiaire">
+                  {{ stagiaire.firstname }} {{ stagiaire.lastname }}
+                </option>
+              </select>
+            </div>
+            <div class="col">
+              <label for="projet" class="form-label">Project</label>
+              <select class="form-select" formControlName="projet">
+                <option *ngFor="let projet of projetsOptions" [ngValue]="projet">
+                  {{ projet.intitule }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col form-heading">
+              <h6 class="text-secondary fst-italic">Imag internshipe</h6>
+              <input type="file" class="form-control" id="profile" #fileInput>
+            </div>
+          </div>
+
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="addStage()">Insert</button>
+      </div>
+    </div>
+  </div>
+</div>

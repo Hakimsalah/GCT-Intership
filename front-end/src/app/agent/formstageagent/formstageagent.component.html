@@ -1,0 +1,45 @@
+<div class="container-fluid g-0">
+
+    <!-- HEADER -->
+    <app-headeragent></app-headeragent>
+  
+    <!-- MAIN CONTENT -->
+    <main class="black-borde">
+  
+      <!-- TOOBAR TO ADD EMPLOYEES,PROJETS AND SEARCH EMPLOYEES -->
+      <div class="toolbar">
+  
+        <div class="search-stages">
+          <input type="search" class="form-control" placeholder="Search Stages"
+            (input)="searchStages(searchInput.value)" #searchInput>
+        </div>
+  
+      </div>
+  
+      <!-- AREA TO DISPLAY ALL THE stagiaires -->
+      <div class="projets">
+  
+        <div class="row mt-5" *ngIf="stages.length == 0">
+          <div class="col text-center">
+            <span class="text-secondary fs-2 fw-bold fst-italic">There are No Internship Added!</span>
+          </div>
+        </div>
+  
+        <div class="row mt-4" *ngFor="let projet of stagesToDisplay | paginate: { itemsPerPage: 4, currentPage: page }; let ei = index;"></div>
+  
+        <div class="row mt-4" *ngFor="let projet of stagesToDisplay; let ei = index;">
+          <div class="col">
+           <app-stageagent></app-stageagent>
+          </div>
+          
+        </div>
+        <pagination-controls (pageChange)="page = $event"></pagination-controls>
+        
+  
+      </div>
+  
+      
+    </main>
+  </div>
+  <!-- Modal stage-->
+  

@@ -1,0 +1,43 @@
+/* Style for the navbar */
+.navbar {
+    background-color: #343a40;
+    padding: 10px;
+  }
+  
+  .navbar-brand {
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .navbar-nav {
+    margin: 0 auto; /* Centrer les éléments de la navbar */
+    text-align: center; /* Centrer le texte des éléments */
+  }
+  
+  .nav-item {
+    margin-left: 50px; /* Ajuster la marge entre les éléments si nécessaire */
+  }
+  
+  .nav-link {
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 5px 10px;
+    transition: background-color 0.3s;
+  }
+  
+  .nav-link:hover {
+    background-color:  #008653;
+    border-radius: 5px;
+  }
+  
+  .nav-link.active {
+    background-color: #008653; /* Couleur verte */
+    border-radius: 5px;
+  }
+  
+  .ml-md-auto {
+    margin-left: auto; /* Alignement automatique à droite sur les tailles de dispositif medium et plus grandes */
+  }
+  

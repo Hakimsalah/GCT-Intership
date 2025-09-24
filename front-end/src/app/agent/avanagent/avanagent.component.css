@@ -1,0 +1,138 @@
+:host {
+    display: block;
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  thead {
+    background-color: #f4f4f4;
+  }
+  
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #f7f7f7;
+    font-weight: bold;
+  }
+  
+  tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  td {
+    color: #555;
+  }
+  
+  /* Style pour la progression */
+  td:last-child {
+    font-weight: bold;
+  }
+  
+  /* Ajout de couleurs pour le statut */
+  td[data-statut="En cours"] {
+    color: #ff9800;
+  }
+  
+  td[data-statut="Terminé"] {
+    color: #4caf50;
+  }
+  
+  main {
+    width: 90%;
+    margin: 3rem auto 0px;
+  }
+  
+  body {
+    background: #eee url('https://i.imgur.com/eeQeRmk.png');
+    line-height: 1;
+    color: #585858;
+    padding: 22px 10px;
+    padding-bottom: 600px;
+  }
+  
+  h1 {
+    font-family: 'Amarante', Tahoma, sans-serif;
+    font-weight: bold;
+    font-size: 3.6em;
+    line-height: 1.7em;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  #wrapper {
+    display: block;
+    width: 1300px;
+    background: #fff;
+    margin: 0 auto;
+    padding: 10px 17px;
+  }
+  
+  input {
+    padding: 5px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  button {
+    padding: 5px 10px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: green;
+  }
+  
+  button.update-btn {
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+  }
+  
+  button.update-btn:hover {
+    background-color: green;
+  }
+  
+  button.btn-outline-primary {
+    margin: 0 auto;
+    display: block;
+  }
+  
+  button.btn-outline-primary img.icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  button.btn-outline-primary:hover {
+    background-color: green;
+    color: white;
+    border-color: green;
+  }
+  
+  @media print {
+    button {
+      display: none;
+    }
+  }
+  

@@ -1,0 +1,72 @@
+<div class="container-fluid g-0 p-2">
+    
+    <div class="row g-0">
+        <div class="col-md-2 d-flex justify-content-center align-items-center">
+            <img src="../../assets/Images/{{projet.profile}}" alt="Profile Image" class="profile">
+        </div>
+
+        <div class="col ps-2">
+
+            <div class="row g-0">
+                
+                <div class="col-md-10 text-center">
+                    <span class="name">{{projet.intitule  }} </span>
+                </div>
+                
+                <div class="col-md-2 d-flex justify-content-center align-items-center">
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-outline-primary" (click)="printThisPage()">
+                                <img src="../../assets/Images/images.png" alt="Print" class="icon">
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row g-0 mt-3">
+
+                <div class="col-md">
+                    
+
+                    <table class="table table-hover mx-auto">
+                        <thead class="text-center fs-5 fst-italic text-secondary">
+                            <tr>
+                                <td colspan="2">Projet Details</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td>Description:</td>
+                                <td>{{projet.description }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Tâches:</td>
+                                <td>{{projet.taches}}</td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Technologies:</td>
+                                <td>{{projet.technologies}}</td>
+                            </tr>
+                           
+                            <tr>
+                                <td>Domaine:</td>
+                                <td>{{projet.domaine}}</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+            
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,62 @@
+<app-header></app-header>
+<!-- MAIN CONTENT -->
+<main>
+  <div id="wrapper">
+    <h1>Monitoring the progress of Internships</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Internship</th>
+          <th>Intern</th>
+          <th>Status</th>
+          <th>Completed tasks</th>
+          <th>Progression (%)</th>
+          <th>Action</th>
+          <th>Printed</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let stage of stages | paginate: { itemsPerPage: 4, currentPage: page }">
+          <td>{{ stage.titre }}</td>
+          <td>{{ stage.stagiaire?.firstname }} {{ stage.stagiaire?.lastname }}</td>
+          <td>
+            <select (change)="onStatutChange($event, stage.id)" [value]="evaluations[stage.id]?.statut || ''">
+              <option value="">Select status</option>
+              <option value="Bon">Good</option>
+              <option value="Moyen">AVERAGE</option>
+              <option value="Mauvaise">Bad</option>
+              <option value="Excellent">Excellent</option>
+              <option value="Faible">Weak</option>
+            </select>
+          </td>
+          <td>
+            <input 
+              type="text" 
+              [value]="evaluations[stage.id]?.tache_realise || ''" 
+              (input)="onTacheChange($event, stage.id)"
+              placeholder="Entrez les tâches réalisées"
+            />
+          </td>
+          <td>
+            <input 
+              type="number" 
+              [value]="evaluations[stage.id]?.progression || 0" 
+              (input)="onProgressionChange($event, stage.id)"
+              placeholder="Entrez la progression"
+              min="0" max="100"
+            />
+          </td>
+          <td>
+            <button class="update-btn" (click)="updateEvaluation(stage.id)">To updater</button>
+          </td>
+          <td>
+            <button class="btn btn-outline-primary" (click)="printThisPage()">
+                <img src="../../assets/Images/images.png" alt="Print" class="icon">
+            </button>
+         </td>
+        </tr>
+      </tbody>
+    </table>
+    <pagination-controls (pageChange)="page = $event"></pagination-controls>
+  </div>
+</main>

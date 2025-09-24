@@ -1,0 +1,74 @@
+.black-border {
+  border: 1px solid black;
+}
+
+img {
+  width: 100%;
+  border-radius: 1rem;
+}
+
+table {
+  width: 90%;
+}
+
+.name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 3px;
+
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 0px 2rem;
+}
+button.btn-outline-primary {
+  margin-right: 100px;
+  
+   /* Ajustez cette valeur pour déplacer le bouton vers le haut */
+}
+.ok{
+  background-color:black;
+  color: white; 
+ 
+  
+}
+.ok:hover {
+  background-color: skyblue;
+  color: white; 
+   border-color: skyblue;
+}
+
+button.btn-outline-primary img.icon {
+  width: 20px;
+  height: 20px;
+ 
+}
+button.btn-outline-primary:hover {
+  background-color:skyblue;
+  color: white; 
+   border-color: skyblue;
+}
+@media print {
+  .print-only {
+    display: block !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  button {
+    display: none;
+  }
+  .search-stagiaires {
+    display: none;
+  }
+  img.profile {
+    width: 50px; /* Ajustez cette valeur pour réduire la taille de l'image lors de l'impression */
+    height: 50px; /* Ajustez cette valeur pour réduire la taille de l'image lors de l'impression */
+    border-radius: 50%;
+    position: absolute; /* Positionne l'image à gauche */
+    left: 140px;
+    top:255px/* Conserve la forme circulaire */
+  }
+  
+}
+

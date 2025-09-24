@@ -1,0 +1,66 @@
+<div class="container-fluid g-0 p-2 stagiaire-container">
+
+    <div class="row g-0">
+      <div class="col-md-2 d-flex justify-content-center align-items-center">
+        <img src="../../assets/Images/{{stagiaire.profile}}" alt="Profile Image" class="profile">
+      </div>
+  
+      <div class="col ps-2">
+        <div class="row g-0">
+          <div class="col-md-10 text-center">
+            <span class="name">{{stagiaire.firstname}} {{stagiaire.lastname}}</span>
+          </div>
+          <div class="col-md-2 d-flex justify-content-center align-items-center">
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-outline-success" (click)="editStagiaireClicked()">Edit</button>
+              <button type="button" class="btn btn-outline-danger" (click)="deleteStagiaireClicked()">Delete</button>
+              <button class="ok" (click)="onClose()">Close</button>
+              <button class="btn btn-outline-primary" (click)="printStagiaire()">
+                <img src="../../assets/Images/images.png" alt="Print" class="icon">
+              </button>
+            </div>
+          </div>
+        </div>
+  
+        <div class="row g-0 mt-3">
+          <div class="col-md">
+            <table class="table table-hover mx-auto">
+              <thead class="text-center fs-5 fst-italic text-secondary">
+                <tr>
+                  <td colspan="2">Personal Details</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>CIN</td>
+                  <td>{{stagiaire.cin}}</td>
+                </tr>
+                <tr>
+                  <td>Email</td>
+                  <td>{{stagiaire.email}}</td>
+                </tr>
+                <tr>
+                  <td>Address</td>
+                  <td>{{stagiaire.adresse}}</td>
+                </tr>
+                <tr>
+                  <td>NumTel</td>
+                  <td>{{stagiaire.numTel}}</td>
+                </tr>
+                <tr>
+                  <td>Academic background</td>
+                  <td>{{stagiaire.education}}</td>
+                </tr>
+                <tr>
+                  <td>Choice of establishment</td>
+                  <td>{{stagiaire.etablissement}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  

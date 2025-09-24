@@ -1,0 +1,157 @@
+<div class="container-fluid g-0">
+
+  <!-- HEADER -->
+  <app-header></app-header>
+
+  <!-- MAIN CONTENT -->
+  <main class="black-borde">
+
+    <!-- TOOBAR TO ADD EMPLOYEES,PROJETS AND SEARCH EMPLOYEES -->
+    <div class="toolbar">
+
+      <div class="add-projet">
+        <button type="button" class="btn btn-outline-success btn-lg" data-bs-toggle="modal"
+          data-bs-target="#exampleModal1" #addProjetButton>Add Projet</button>
+      </div>
+
+
+      <div class="search-projets">
+        <input type="search" class="form-control" placeholder="Search Projets"
+          (input)="searchProjets(searchInput.value)" #searchInput>
+      </div>
+
+    </div>
+
+    <!-- AREA TO DISPLAY ALL THE stagiaires -->
+    <div class="projets">
+
+      <div class="row mt-5" *ngIf="projets.length == 0">
+        <div class="col text-center">
+          <span class="text-secondary fs-2 fw-bold fst-italic">There are No Projets Added!</span>
+        </div>
+      </div>
+
+      <br>
+      <br>
+      
+      <div class="row justify-content-center mb-5" *ngIf="!selectedProjet">
+        <div class="col-md-10">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Intitule</th>
+                <th>Technologies</th>
+                <th>Domaine</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let projet of projetsToDisplay | paginate: { itemsPerPage: 4, currentPage: page }">
+                <td>{{ projet.intitule }}</td>
+                <td>{{ projet.technologies }}</td>
+                <td>{{ projet.domaine }}</td>
+                <td>
+                  <button class="btn btn-info" (click)="showDetails(projet)">Details</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <pagination-controls (pageChange)="page = $event"></pagination-controls>
+        </div>
+      </div>
+    
+      <div *ngIf="selectedProjet" class="row mt-4">
+        <div class="col-md-10">
+          <app-projet [projet]="selectedProjet" 
+                      (onRemoveProjet)="removeProjet($event)"
+                      (onEditProjet)="editProjet($event)"
+                       (closeDetails)="closeDetails()">
+          </app-projet>
+        </div>
+        
+      </div>
+    </div>
+
+    
+  </main>
+</div>
+
+<!-- Modal projet-->
+<div class="modal fade" id="exampleModal1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Enter Project Information</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+
+        <form [formGroup]="projetForm">
+
+          <!-- FIRST AND LAST NAME -->
+          <div class="row">
+            <div class="col">
+              <input type="text" class="form-control" placeholder="Titre" formControlName="intitule">
+            </div>
+            
+          </div>
+
+          <!-- PROJECT INFORMATION -->
+          <div class="row mt-5">
+            <div class="col form-heading">
+              <h6 class="text-secondary fst-italic">Project Information</h6>
+            </div>
+          
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <textarea type="text" class="form-control" placeholder="Description" formControlName="description"></textarea>
+            </div>
+          </div>
+          
+          
+           
+             <div class="row mt-3">
+                <div class="col">
+                    <textarea type="text" class="form-control" placeholder="taches" formControlName="taches"></textarea>
+                </div>
+             </div>
+           
+             <div class="row mt-3">
+               <div class="col">
+                  <input type="text" class="form-control" placeholder="Technologies" formControlName="technologies">
+               </div>
+             </div>
+             
+             <br>
+             <br>
+
+             <div class="col">
+               <select class="form-select" formControlName="domaine">
+                  <option value="default" selected> Choice of Domaine</option>
+                  <option *ngFor="let option of domaineOptions; let i = index;" value="{{i}}">
+                  {{option }}
+                  </option>
+                </select>
+             </div>
+            
+           
+          <div class="row mt-3">
+            <div class="col form-heading">
+              <h6 class="text-secondary fst-italic">Imag Project</h6>
+              <input type="file" class="form-control" id="profile" #fileInput>
+            </div>
+          </div>
+
+          
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="addProjet()">Insert</button>
+      </div>
+    </div>
+  </div>
+</div>

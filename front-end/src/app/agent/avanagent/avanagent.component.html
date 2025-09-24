@@ -1,0 +1,36 @@
+<app-headeragent></app-headeragent>
+<!-- MAIN CONTENT -->
+<main>
+  <div id="wrapper">
+    <h1>Monitoring the progress of internships</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Internship</th>
+          <th>Intern</th>
+          <th>Status</th>
+          <th>Completed tasks</th>
+          <th>Progression (%)</th>
+          <th>Action</th>
+          <th>Printed</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let stage of stages | paginate: { itemsPerPage: 4, currentPage: page }">
+          <td>{{ stage.titre }}</td>
+          <td>{{ stage.stagiaire?.firstname }} {{ stage.stagiaire?.lastname }}</td>
+          <td>{{ evaluations[stage.id]?.statut || '' }}</td> 
+          <td>{{ evaluations[stage.id]?.tache_realise || '' }}</td>
+          <td>{{ evaluations[stage.id]?.progression || 0 }}</td>
+          <td>
+            <button class="btn btn-outline-primary" (click)="printThisPage()">
+              <img src="../../assets/Images/images.png" alt="Print" class="icon">
+            </button>
+          </td>
+          <td><!-- You can add a placeholder or content here if needed --></td>
+        </tr>
+      </tbody>
+    </table>
+    <pagination-controls (pageChange)="page = $event"></pagination-controls>
+  </div>
+</main>
