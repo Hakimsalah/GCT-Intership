@@ -103,22 +103,7 @@ jobs:
           echo "📊 État final:"
           kubectl get pods -n default
 
-      # 🚀 Déployer backend sur AKS
-      - name: Deploy backend to AKS
-        run: |
-          # Mettre à jour l'image
-          sed -i "s|image: .*|image: hakim2002/backend:${{ github.sha }}|" k8s-manifests/backend/deployment-backend.yaml
-          
-          # Appliquer le deployment
-          kubectl apply -f k8s-manifests/backend/ -n default
-          
-          # Attendre le rollout avec diagnostics
-          kubectl rollout status deployment/backend-deployment -n default --timeout=600s || {
-            echo "⚠️ Rollback ou erreur de déploiement"
-            kubectl get pods -n default -l app=backend
-            kubectl logs -l app=backend -n default --tail=100
-            exit 1
-          }
+      
 
       # 🚀 Déployer frontend sur AKS
       - name: Deploy frontend to AKS
