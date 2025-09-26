@@ -55,12 +55,19 @@ jobs:
             --namespace=default --dry-run=client -o yaml | kubectl apply -f -
 
       # 🗄️ Déployer MySQL d'abord
+            # 🗄️ Déployer MySQL avec vérification améliorée
       - name: Deploy MySQL
         run: |
+          # Appliquer tous les fichiers MySQL
           kubectl apply -f k8s-manifests/database/ -n default
-          # Attendre que MySQL soit prêt
-          kubectl wait --for=condition=ready pod -l app=mysql -n default --timeout=300s
-          sleep 30  # Donner plus de temps à MySQL pour s'initialiser
+          
+          # Attendre avec le nom exact du deployment
+          echo "⏳ Attente du déploiement MySQL..."
+          kubectl rollout status deployment/mysql-deployment -n default --timeout=300s
+          
+          # Vérifier l'état des pods
+          echo "📊 État des pods MySQL:"
+          kubectl get pods -n default -l app=mysql
 
       # 🚀 Déployer backend sur AKS
       - name: Deploy backend to AKS
