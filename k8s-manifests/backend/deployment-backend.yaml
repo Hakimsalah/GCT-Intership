@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend-deployment
-  labels:
-    app: backend
 spec:
   replicas: 2
   selector:
@@ -16,12 +14,12 @@ spec:
     spec:
       containers:
         - name: backend
-          image: mycontainerregistry.azurecr.io/backend:latest
+          image: hakim2002/backend:latest  # ← CORRIGÉ
           ports:
             - containerPort: 8080
           env:
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:mysql://mysql-service:3306/internshipdb
+              value: "jdbc:mysql://mysql-service:3306/internshipdb"
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -36,20 +34,14 @@ spec:
             httpGet:
               path: /actuator/health
               port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 5
+            initialDelaySeconds: 90
+            periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /actuator/health
               port: 8080
-            initialDelaySeconds: 30
-            periodSeconds: 10
-          volumeMounts:
-            - name: backend-logs
-              mountPath: /app/logs
-      volumes:
-        - name: backend-logs
-          emptyDir: {}
+            initialDelaySeconds: 120
+            periodSeconds: 20
 ---
 apiVersion: v1
 kind: Service

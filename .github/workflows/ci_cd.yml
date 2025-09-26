@@ -46,24 +46,47 @@ jobs:
           resource-group: myAKSCluster_group
           cluster-name: myAKSCluster
 
-      # 🔐 Créer les secrets Kubernetes
-      - name: Create MySQL Secret
+      # 🗄️ Déployer MySQL d'abord
+      - name: Deploy MySQL
         run: |
-          kubectl create secret generic mysql-secret \
-            --from-literal=username=${{ secrets.MYSQL_USERNAME }} \
-            --from-literal=password=${{ secrets.MYSQL_PASSWORD }} \
-            --namespace=default --dry-run=client -o yaml | kubectl apply -f -
+          kubectl apply -f k8s-manifests/mysql/ -n default
+          # Attendre que MySQL soit prêt
+          kubectl wait --for=condition=ready pod -l app=mysql -n default --timeout=300s
+          sleep 30  # Donner plus de temps à MySQL pour s'initialiser
 
       # 🚀 Déployer backend sur AKS
       - name: Deploy backend to AKS
         run: |
+          # Mettre à jour l'image
           sed -i "s|image: .*|image: hakim2002/backend:${{ github.sha }}|" k8s-manifests/backend/deployment-backend.yaml
+          
+          # Appliquer le deployment
           kubectl apply -f k8s-manifests/backend/ -n default
-          kubectl rollout status deployment/backend-deployment -n default --timeout=600s
+          
+          # Attendre le rollout avec diagnostics
+          kubectl rollout status deployment/backend-deployment -n default --timeout=600s || {
+            echo "⚠️ Rollback ou erreur de déploiement"
+            kubectl get pods -n default -l app=backend
+            kubectl logs -l app=backend -n default --tail=100
+            exit 1
+          }
 
       # 🚀 Déployer frontend sur AKS
       - name: Deploy frontend to AKS
         run: |
+          # Mettre à jour l'image
           sed -i "s|image: .*|image: hakim2002/frontend:${{ github.sha }}|" k8s-manifests/frontend/deployment-frontend.yaml
+          
+          # Appliquer le deployment
           kubectl apply -f k8s-manifests/frontend/ -n default
           kubectl rollout status deployment/frontend-deployment -n default --timeout=300s
+
+      # 📊 Vérification finale
+      - name: Verify deployment
+        run: |
+          echo "🎯 État des déploiements :"
+          kubectl get deployments -n default
+          echo "🐳 État des pods :"
+          kubectl get pods -n default
+          echo "🌐 État des services :"
+          kubectl get services -n default

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: mycontainerregistry.azurecr.io/frontend:latest
+          image: hakim2002/frontend:latest  # ← CORRIGÉ
           ports:
             - containerPort: 80
 ---
