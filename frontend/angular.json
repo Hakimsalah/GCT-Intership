@@ -27,35 +27,23 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [],
-            "optimization": {
-              "styles": {
-                "minify": true,
-                "inlineCritical": false
-              }
-            }
+            "scripts": []
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "4mb"
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "10kb",
-                  "maximumError": "20kb"
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
                 }
               ],
-              "outputHashing": "all",
-              "optimization": {
-                "styles": {
-                  "minify": true,
-                  "inlineCritical": false
-                }
-              }
+              "outputHashing": "all"
             },
             "development": {
               "optimization": false,
@@ -96,8 +84,8 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "styles.scss",
+               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+               "styles.scss",
               "src/styles.css"
             ],
             "scripts": []
