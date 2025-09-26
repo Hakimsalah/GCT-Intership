@@ -52,11 +52,11 @@ jobs:
           # Remplace l'image dans le manifest avec le commit SHA
           sed -i "s|image: .*|image: hakim2002/backend:${{ github.sha }}|" k8s-manifests/backend/deployment-backend.yaml
           kubectl apply -f k8s-manifests/backend/ -n default
-          kubectl rollout status deployment/backend -n default
+          kubectl rollout status deployment/backend-deployment -n default  # ← Corrigé
 
       # 🚀 Déployer frontend sur AKS
       - name: Deploy frontend to AKS
         run: |
           sed -i "s|image: .*|image: hakim2002/frontend:${{ github.sha }}|" k8s-manifests/frontend/deployment-frontend.yaml
           kubectl apply -f k8s-manifests/frontend/ -n default
-          kubectl rollout status deployment/frontend -n default
+          kubectl rollout status deployment/frontend-deployment -n default  # ← Corrigé
