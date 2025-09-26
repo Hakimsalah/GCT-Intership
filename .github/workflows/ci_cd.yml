@@ -33,7 +33,7 @@ jobs:
           docker build -t hakim2002/frontend:${{ github.sha }} .
           docker push hakim2002/frontend:${{ github.sha }}
 
-      # 🔹 Se connecter à Azure (⚠️ il faut créer un secret AZURE_CREDENTIALS)
+      # 🔹 Se connecter à Azure (⚠️ secret AZURE_CREDENTIALS)
       - name: Azure Login
         uses: azure/login@v1
         with:
@@ -43,17 +43,20 @@ jobs:
       - name: Set up kubectl
         uses: azure/aks-set-context@v3
         with:
-          resource-group: myAKSCluster_group   # ⚠️ Mets le vrai nom (chez toi c’est "myAKSCluster_group")
+          resource-group: myAKSCluster_group
           cluster-name: myAKSCluster
 
       # 🚀 Déployer backend sur AKS
       - name: Deploy backend to AKS
         run: |
-          kubectl set image deployment/backend backend=hakimsalah/backend:${{ github.sha }} -n default
+          # Remplace l'image dans le manifest avec le commit SHA
+          sed -i "s|image: .*|image: hakim2002/backend:${{ github.sha }}|" k8s-manifests/backend/deployment-backend.yaml
+          kubectl apply -f k8s-manifests/backend/ -n default
           kubectl rollout status deployment/backend -n default
 
       # 🚀 Déployer frontend sur AKS
       - name: Deploy frontend to AKS
         run: |
-          kubectl set image deployment/frontend frontend=hakimsalah/frontend:${{ github.sha }} -n default
+          sed -i "s|image: .*|image: hakim2002/frontend:${{ github.sha }}|" k8s-manifests/frontend/deployment-frontend.yaml
+          kubectl apply -f k8s-manifests/frontend/ -n default
           kubectl rollout status deployment/frontend -n default
