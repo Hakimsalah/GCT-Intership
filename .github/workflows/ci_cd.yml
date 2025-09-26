@@ -45,6 +45,14 @@ jobs:
         with:
           resource-group: myAKSCluster_group
           cluster-name: myAKSCluster
+      
+      # 🔐 CRÉER LE SECRET MYSQL
+      - name: Create MySQL Secret
+        run: |
+          kubectl create secret generic mysql-secret \
+            --from-literal=username=root \
+            --from-literal=password=password \
+            --namespace=default --dry-run=client -o yaml | kubectl apply -f -
 
       # 🗄️ Déployer MySQL d'abord
       - name: Deploy MySQL
