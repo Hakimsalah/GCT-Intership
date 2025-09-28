@@ -94,20 +94,18 @@ jobs:
 
 
 
-      # 🔐 CRÉER LE SECRET MYSQL
-
-      - name: Create MySQL Secret
-
+            # 🔐 GESTION SIMPLE DU SECRET MYSQL
+      - name: Handle MySQL Secret
         run: |
-
+          # Supprimer le secret s'il existe, ignorer l'erreur s'il n'existe pas
+          kubectl delete secret mysql-secret -n default 2>/dev/null || true
+          
+          # Créer le secret
           kubectl create secret generic mysql-secret \
-
             --from-literal=username=root \
-
             --from-literal=password=password \
-
-            --namespace=default --dry-run=client -o yaml | kubectl apply -f -
-
+            --namespace=default
+          echo "✅ Secret MySQL créé/mis à jour"
 
 
       # 🗄️ Déployer MySQL d'abord
