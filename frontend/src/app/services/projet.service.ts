@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ProjetService {
-  baseUrl = 'http://localhost:9090/api/projets';
+  baseUrl = 'http://backend-service:9090/api/projets';
 
   constructor(private http: HttpClient) {}
 

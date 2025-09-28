@@ -9,7 +9,7 @@ import { Evaluation } from '../models/Evaluation.model';
   providedIn: 'root'
 })
 export class StageService {
-  private baseUrl = 'http://localhost:9090/api/stages';
+  private baseUrl = 'http://backend-service:9090/api/stages';
 
   constructor(private http: HttpClient, private evaluationService: EvaluationService) {}
 
