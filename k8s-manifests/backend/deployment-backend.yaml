@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: hakim2002/backend:d9997b0954d76b461e90872e10f3c13a825381fc
+          image: hakim2002/backend:latest
           ports:
             - containerPort: 9090
           env:
