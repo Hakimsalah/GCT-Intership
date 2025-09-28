@@ -27,10 +27,34 @@ jobs:
           docker build -t hakim2002/backend:${{ github.sha }} .
           docker push hakim2002/backend:${{ github.sha }}
 
-      # 🐳 Build & push frontend
+      # 🐳 Build & push frontend CORRIGÉ
       - name: Build and push frontend Docker image
         working-directory: frontend
         run: |
+          # Build Angular
+          npm install
+          npm run build --prod
+          
+          # VÉRIFICATION CRITIQUE DE LA STRUCTURE
+          echo "=== STRUCTURE DU BUILD ANGULAR ==="
+          find dist -name "*.html" -type f
+          echo "=== CONTENU DE DIST/DEMOAPP ==="
+          ls -la dist/demoapp/
+          echo "=== CONTENU DE DIST/DEMOAPP/BROWSER ==="
+          ls -la dist/demoapp/browser/
+          
+          # Vérifier que le VRAI index.html Angular existe
+          if [ -f "dist/demoapp/browser/index.html" ]; then
+            echo "✅ VRAI index.html Angular trouvé dans browser/"
+            head -5 dist/demoapp/browser/index.html
+          else
+            echo "❌ index.html Angular non trouvé dans browser/"
+            echo "Fichiers HTML trouvés:"
+            find dist -name "*.html" -type f
+            exit 1
+          fi
+          
+          # Build Docker
           docker build -t hakim2002/frontend:${{ github.sha }} .
           docker push hakim2002/frontend:${{ github.sha }}
 

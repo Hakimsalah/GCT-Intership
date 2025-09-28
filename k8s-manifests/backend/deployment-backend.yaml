@@ -16,7 +16,7 @@ spec:
         - name: backend
           image: hakim2002/backend:latest  # ← CORRIGÉ
           ports:
-            - containerPort: 8080
+            - containerPort: 9090
           env:
             - name: SPRING_DATASOURCE_URL
               value: "jdbc:mysql://mysql-service:3306/internshipdb"
@@ -33,13 +33,13 @@ spec:
           readinessProbe:
             httpGet:
               path: /actuator/health
-              port: 8080
+              port: 9090
             initialDelaySeconds: 90
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /actuator/health
-              port: 8080
+              port: 9090
             initialDelaySeconds: 120
             periodSeconds: 20
 ---
@@ -52,6 +52,6 @@ spec:
     app: backend
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
+      port: 9090
+      targetPort: 9090
   type: ClusterIP
