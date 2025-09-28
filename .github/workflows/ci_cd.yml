@@ -82,19 +82,19 @@ jobs:
           echo "📊 État final backend:"
           kubectl get pods -n default -l app=backend
 
-      # 🚀 Déploiement frontend
+      # 🚀 Déployer frontend sur AKS (METHODE KUBECTL SET IMAGE)
       - name: Deploy frontend to AKS
         run: |
           echo "🔧 Mise à jour de l'image frontend..."
-          yq -i ".spec.template.spec.containers[0].image = \"hakim2002/frontend:${{ github.sha }}\"" k8s-manifests/frontend/deployment-frontend.yaml
-
+          
+          # Appliquer le fichier initial (au cas où)
           kubectl apply -f k8s-manifests/frontend/ -n default
-
-          echo "⏳ Attente du rollout frontend..."
-          kubectl rollout status deployment/frontend-deployment -n default --timeout=180s || true
-
-          echo "📊 État final frontend:"
-          kubectl get pods -n default -l app=frontend
+          
+          # Mettre à jour l'image avec kubectl set image (méthode recommandée)
+          kubectl set image deployment/frontend-deployment frontend=hakim2002/frontend:${{ github.sha }} -n default
+          
+          # Attendre le rollout
+          kubectl rollout status deployment/frontend-deployment -n default --timeout=300s
 
       # 📊 Vérification finale
       - name: Verify deployment
