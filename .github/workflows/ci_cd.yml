@@ -73,9 +73,8 @@ jobs:
       - name: Deploy backend to AKS
         run: |
           echo "🔧 Mise à jour de l'image backend..."
-          yq -i ".spec.template.spec.containers[0].image = \"hakim2002/backend:${{ github.sha }}\"" k8s-manifests/backend/deployment-backend.yaml
-
-          kubectl apply -f k8s-manifests/backend/ -n default
+          kubectl set image deployment/backend-deployment \
+            backend=hakim2002/backend:${{ github.sha }} -n default
 
           echo "⏳ Attente du rollout backend..."
           kubectl rollout status deployment/backend-deployment -n default --timeout=180s || true
