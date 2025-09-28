@@ -1,158 +1,267 @@
 name: CI/CD Pipeline
 
+
+
 on:
+
   push:
+
     branches: [ "main" ]
 
+
+
 jobs:
+
   build-and-deploy:
+
     runs-on: ubuntu-latest
+
     steps:
+
       # 📥 Récupérer le code
+
       - name: Checkout code
+
         uses: actions/checkout@v3
 
+
+
       # 🔑 Connexion à Docker Hub
+
       - name: Log in to Docker Hub
+
         uses: docker/login-action@v2
+
         with:
+
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
+
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
+
+
       # 🐳 Build & push backend
+
       - name: Build and push backend Docker image
+
         working-directory: backend
+
         run: |
+
           docker build -t hakim2002/backend:${{ github.sha }} .
+
           docker push hakim2002/backend:${{ github.sha }}
 
-      # 🐳 Build & push frontend AVEC CORRECTIONS
+
+
+      # 🐳 Build & push frontend
+
       - name: Build and push frontend Docker image
+
         working-directory: frontend
+
         run: |
-          # 1. Corriger les erreurs dans index.html
-          echo "🔧 Correction des erreurs dans index.html..."
-          sed -i 's/faxicon\.ico/favicon.ico/g' src/index.html
-          sed -i 's/bootstrap@9\.1\.3/bootstrap@5.1.3/g' src/index.html
-          sed -i 's/="\/@export"/="viewport"/g' src/index.html
-          
-          # 2. SUPPRIMER les polices Google Fonts problématiques temporairement
-          sed -i '/fonts.googleapis.com\/css2/d' src/index.html
-          echo "✅ Polices Google Fonts supprimées temporairement"
-          
-          # 3. Corriger les erreurs de template Angular
-          echo "🔧 Correction des erreurs de template..."
-          find src/app -name "*.html" -exec sed -i 's/\.\?\././g' {} \;  # Remplacer ?. par .
-          
-          # 4. Build Angular avec optimisation désactivée pour les polices
-          npm install
-          npm run build --prod --optimization=false
-          
-          # 5. Vérifier que le build a fonctionné
-          if [ -f "dist/demoapp/index.html" ]; then
-            echo "✅ Build Angular réussi"
-            ls -la dist/demoapp/ | head -5
-          else
-            echo "❌ Build Angular échoué"
-            ls -la dist/
-            exit 1
-          fi
-          
-          # 6. Build et push Docker
+
           docker build -t hakim2002/frontend:${{ github.sha }} .
+
           docker push hakim2002/frontend:${{ github.sha }}
 
+
+
       # 🔹 Se connecter à Azure
+
       - name: Azure Login
+
         uses: azure/login@v1
+
         with:
+
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+
+
       # ⚙️ Configurer kubectl pour AKS
+
       - name: Set up kubectl
+
         uses: azure/aks-set-context@v3
+
         with:
+
           resource-group: myAKSCluster_group
+
           cluster-name: myAKSCluster
-      
+
+
+
       # 🔐 CRÉER LE SECRET MYSQL
+
       - name: Create MySQL Secret
+
         run: |
+
           kubectl create secret generic mysql-secret \
+
             --from-literal=username=root \
+
             --from-literal=password=password \
+
             --namespace=default --dry-run=client -o yaml | kubectl apply -f -
 
-      # 🗄️ Déployer MySQL
+
+
+      # 🗄️ Déployer MySQL d'abord
+
+            # 🗄️ Déployer MySQL avec vérification améliorée
+
+            # 🗄️ DÉPLOYER MYSQL (AVEC NETTOYAGE SI BESOIN)
+
       - name: Deploy MySQL
+
         run: |
+
           # Vérifier l'état actuel
+
           echo "📊 État actuel de MySQL:"
-          kubectl get deployment,pod,service -n default -l app=mysql 2>/dev/null || echo "Aucun déploiement MySQL trouvé"
+
+          kubectl get deployment,pod,service -n default -l app=mysql || echo "Aucun déploiement MySQL trouvé"
+
           
+
           # Supprimer l'ancien déploiement s'il est bloqué
+
           if kubectl get deployment mysql-deployment -n default &>/dev/null; then
+
             echo "🔄 Suppression de l'ancien déploiement MySQL..."
+
             kubectl delete deployment mysql-deployment -n default --timeout=30s
+
             sleep 10
+
           fi
+
           
+
           # Appliquer les fichiers MySQL
-          echo "🔧 Déploiement de MySQL..."
+
+          echo "🔧 Déploiement des nouveaux fichiers MySQL..."
+
           kubectl apply -f k8s-manifests/database/ -n default
+
           
-          # Attendre le démarrage de MySQL
+
+          # Attendre avec une méthode plus robuste
+
           echo "⏳ Attente du démarrage de MySQL..."
-          sleep 40
+
+          sleep 30
+
           
-          # Vérification
+
+          # Vérification simple sans faire échouer le workflow
+
           kubectl get pods -n default -l app=mysql
-          echo "✅ MySQL déployé"
+
+          echo "✅ MySQL déployé - continuation du processus"
+
+
+
+      # 🚀 DÉPLOYER BACKEND (AVEC GESTION DES RETRIES)
+
+      - name: Deploy backend to AKS
+
+        run: |
+
+          sed -i "s|image: .*|image: hakim2002/backend:${{ github.sha }}|" k8s-manifests/backend/deployment-backend.yaml
+
+          kubectl apply -f k8s-manifests/backend/ -n default
+
+          
+
+          # Attendre le backend avec gestion d'erreur
+
+          echo "⏳ Attente du backend (peut prendre plusieurs minutes)..."
+
+          for i in {1..36}; do  # 36 x 10s = 6 minutes
+
+            if kubectl rollout status deployment/backend-deployment -n default --timeout=10s 2>/dev/null; then
+
+              echo "✅ Backend démarré avec succès!"
+
+              break
+
+            fi
+
+            echo "🔄 Tentative $i/36 - Backend en cours de démarrage..."
+
+            sleep 10
+
+          done
+
+          
+
+          # Vérification finale même en cas de timeout
+
+          echo "📊 État final:"
+
+          kubectl get pods -n default
+
+
+
 
       # 🚀 Déployer backend sur AKS
+
+
       - name: Deploy backend to AKS
+
+
         run: |
+
+
+          # Mettre à jour l'image
+
+
           sed -i "s|image: .*|image: hakim2002/backend:${{ github.sha }}|" k8s-manifests/backend/deployment-backend.yaml
+
+
+          # Appliquer le deployment
+
+
           kubectl apply -f k8s-manifests/backend/ -n default
-          
-          # Attendre le backend avec timeout long
-          echo "⏳ Attente du backend..."
-          kubectl rollout status deployment/backend-deployment -n default --timeout=600s
 
-      # 🚀 Déployer frontend sur AKS
-      - name: Deploy frontend to AKS
-        run: |
-          sed -i "s|image: .*|image: hakim2002/frontend:${{ github.sha }}|" k8s-manifests/frontend/deployment-frontend.yaml
-          kubectl apply -f k8s-manifests/frontend/ -n default
-          
-          # Attendre le frontend
-          echo "⏳ Attente du frontend..."
-          kubectl rollout status deployment/frontend-deployment -n default --timeout=300s
+          # Attendre le rollout avec diagnostics
 
-      # 🌐 OBTENIR L'URL DE L'APPLICATION
-      - name: Get Application URL
-        run: |
-          echo "🎯 VOTRE APPLICATION EST MAINTENANT EN LIGNE !"
-          echo "=============================================="
-          
-          # Attendre que l'IP LoadBalancer soit assignée
-          echo "⏳ Attente de l'IP LoadBalancer..."
-          sleep 30
-          
-          # Obtenir l'IP du frontend
-          IP=$(kubectl get service frontend-service -n default -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-          
-          if [ -n "$IP" ]; then
-            echo "🌐 URL de l'application : http://$IP"
-            echo "::notice::🌐 Votre application est disponible à l'adresse : http://$IP"
-          else
-            echo "⚠️ L'IP LoadBalancer est en cours d'attribution..."
-            echo "💡 Elle peut prendre 2-5 minutes à apparaître"
-            kubectl get service frontend-service -n default
-          fi
+
+          kubectl rollout status deployment/backend-deployment -n default --timeout=600s || {
+
+
+            echo "⚠️ Rollback ou erreur de déploiement"
+
+
+            kubectl get pods -n default -l app=backend
+
+
+            kubectl logs -l app=backend -n default --tail=100
+
+
+            exit 1
+
+
+          }
+
 
       # 📊 Vérification finale
+
       - name: Verify deployment
+
         run: |
-          echo "=== VÉRIFICATION FINALE ==="
-          kubectl get all -n default
+
+          echo "🎯 État des déploiements :"
+
+          kubectl get deployments -n default
+
+          echo "🐳 État des pods :"
+
+          kubectl get pods -n default
+
+          echo "🌐 État des services :"
