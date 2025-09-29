@@ -4,9 +4,7 @@ A full-stack web application for managing internships, built with modern technol
 
 ![Login Page](./screenshots/login-page.png)
 ![Dashboard](./screenshots/dashboard.png)
-![CI/CD Pipeline](./screenshots/cicd-pipeline.png)
-![Deployment Status](./screenshots/deployment-status.png)
-![Architecture](./screenshots/architecture.png)
+
 ## 🚀 Features
 
 - **🔐 User Authentication** - Secure login system
