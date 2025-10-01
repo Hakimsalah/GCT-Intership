@@ -15,7 +15,7 @@ A full-stack web application for managing internships, built with modern technol
 - **📱 Responsive Design** - Works on all devices
 
 ## 🏗️ Architecture
-Frontend (Angular) → Backend (Spring Boot) → Database (MySQL)
+Frontend (Angular) → Backend (Spring Boot) → Database (MySQL) 
 ↓ ↓ ↓
 Nginx Server Spring Boot REST API MySQL 8.0
 ↓ ↓ ↓
@@ -48,7 +48,7 @@ Azure AKS Cluster + Load Balancer
 - **Azure Container Registry** - Docker image storage
 - **Nginx** - Web server & reverse proxy
 
-## 📁 Project Structure
+
 
 ## 🚀 Deployment Architecture
 
